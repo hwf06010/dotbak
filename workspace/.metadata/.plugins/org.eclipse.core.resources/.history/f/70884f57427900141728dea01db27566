@@ -1,0 +1,105 @@
+package dotBAK.filesystem;
+
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+
+import dotBAK.common.UIDGenerator;
+import dotBAK.user.Permission;
+import dotBAK.user.User;
+
+public abstract class File extends java.io.File{
+
+	private Set<File> _subFiles;
+	private int _id;
+
+	/**
+	 * generated serial version UID
+	 */
+	private static final long serialVersionUID = -4193129239531496107L;
+
+	public File(String pathname) {
+		super(pathname);
+	}
+	
+	public boolean isDirectory() {
+		return _subFiles != null;
+	}
+	
+	public String encrypt() {
+		return "key";
+	}
+	
+	public void decrypt(String key) {
+		
+	}
+	
+	public void uncompress() {
+		BufferedOutputStream outputStream = null;
+	    TarArchiveInputStream tarInputStream = null;
+
+	    try {
+	        tarInputStream = new TarArchiveInputStream(new FileInputStream(this));
+
+	        TarArchiveEntry entry;
+	        while ((entry = tarInputStream.getNextTarEntry()) != null) {
+	            if (!entry.isDirectory()) {
+	                java.io.File compressedFile = entry.getFile();
+	                java.io.File tempFile = File.createTempFile(compressedFile.getName(), "");
+
+	                byte[] buffer = new byte[BUFFER_MAX_SIZE];
+	                outputStream = new BufferedOutputStream(new FileOutputStream(tempFile), BUFFER_MAX_SIZE);
+
+	                int count = 0;
+	                while ((count = tarInputStream.read(buffer, 0, BUFFER_MAX_SIZE)) != -1) {
+	                    outputStream.write(buffer, 0, count);
+	                }
+	            }
+
+	            delete();
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } finally {
+	        if (outputStream != null) {
+	            outputStream.flush();
+	            outputStream.close();
+	        }
+	    }
+	}
+	
+	public boolean isHidden() {
+		return isHidden(null);
+	}
+	
+	public boolean isHidden(User from) {
+		return from.can(Permission.VIEW, this);
+	}
+	
+	public boolean hasChanged(File since) {
+		return this.lastModified() > since.lastModified();
+	}
+		
+	public abstract boolean write(FileSystem destination);
+	
+	public abstract Map<String, Object> getMetaData();
+	
+	protected abstract void addToArchive(TarArchiveOutputStream archive);
+	
+	public String getUID() {
+		return UIDGenerator.FILE_PREFIX + _id;
+	}
+
+	public static File getInstance(String fileID, String filePath) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+}

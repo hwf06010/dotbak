@@ -1,5 +1,5 @@
 package dotBAK.user;
-
-public class Permission {
-
+	
+public enum Permission {
+	RESTORE, BROWSE, VIEW
 }

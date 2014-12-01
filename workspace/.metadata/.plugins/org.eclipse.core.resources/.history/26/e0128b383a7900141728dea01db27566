@@ -1,0 +1,106 @@
+package dotBAK.user;
+
+import java.io.IOException;
+import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import dotBAK.common.UIDGenerator;
+import dotBAK.filesystem.File;
+import dotBAK.filesystem.FileSystem;
+
+public class Organization {
+
+	private final int _id;
+	private Set<User> _users;
+	private Set<User> _admins;
+	private Set<FileSystem> _cloudFSs;
+	private String _name;
+	
+
+	public static Organization getInstance(int id, Set<User> users, Set<User> admins, Set<FileSystem> cloudFSs){
+		//TO-DO  attempt to import before creating new object
+		return new Organization(id, users, admins, cloudFSs);
+	}
+	
+	private Organization(int id, Set<User> users, Set<User> admins, Set<FileSystem> cloudFSs){
+		_id = id;
+		_users = users;
+		_admins = admins;
+		_cloudFSs = cloudFSs;
+	}
+	
+	public Set<User> getUsers(){
+		return _users;
+	}
+	
+	public Set<User> getAdmins(){
+		return _admins;
+	}
+	
+	public Set<FileSystem> getFileSystems(){
+		return _cloudFSs;
+	}
+	
+	public void addUser(User user) {
+		_users.add(user);
+	}
+	
+	public void removeUser(User user) {
+		_users.remove(user);
+	}
+
+	public void addFileSystem(FileSystem fs) {
+		_cloudFSs.add(fs);
+	}
+	
+	public void removeFileSystem(FileSystem fs) {
+		_cloudFSs.remove(fs);
+	}
+
+	public void makeAdmin(User user) {
+		_admins.add(user);
+
+	}
+	
+	public void removeAdmin(User user) {
+		_admins.remove(user);
+	}
+
+	public void changePermission(User user, Permission p, Boolean b) {
+		user.changePermission(p, b);
+		//user.getPermissions().changePermission(p, b); // which one of these do we care about?
+	}
+
+	public void restore(File orgXML) throws ParserConfigurationException, SAXException, IOException { 
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		Document doc = db.parse(orgXML);
+		doc.getDocumentElement().normalize();
+		NodeList orgs = doc.getElementsByTagName("org");
+		Element org = (Element) orgs.item(0);
+		Attr uid = org.getAttributeNode("uid");
+		_id = Integer.parseInt(uid.getValue().substring(UIDGenerator.ORG_PREFIX.length()));
+		_name = org.getAttributeNode("name").getValue();		
+		
+		NodeList users = doc.getElementsByTagName("user");
+		for(int i = 0; i < users.getLength(); i++) {
+			Element user = (Element) users.item(i);
+			_users.add(User.restore(user, this));
+		}
+	}
+
+	public void export(File f) {
+
+		return;
+	}
+}
+

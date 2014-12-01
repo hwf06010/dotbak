@@ -1,0 +1,114 @@
+package dotBAK.user;
+
+import java.util.List;
+
+import dotBAK.backup.BackupConfig;
+import dotBAK.filesystem.File;
+
+public class User {
+	
+	private String _username;
+	private Organization _org;
+	private PermissionSet _permissions; 
+	private BackupConfig _defaultConfig;
+	private Session _session;
+	
+	public static User getInstance(String username, Organization org, PermissionSet perms, BackupConfig defaultConf){
+		//TO-DO  attempt to import user before creating new object
+		return new User(username, org, perms, defaultConf);
+	}
+	
+	private User (String username, Organization org, PermissionSet perms, BackupConfig defaultConf){
+		_username = username;
+		_org = org;
+		_permissions = perms;
+		_defaultConfig = defaultConf;
+		//repOK();
+	}
+	
+	private void repOK(){
+		/**
+		assert _username != null;
+		assert _org != null;
+		assert _permissions != null;
+		assert _defaultConfig != null;
+		assert _session != null;
+		**/
+	}
+	
+	public Session auth(String username, String password){
+		if(_session == null)
+			_session = new Session();
+		return _session;
+	}
+	
+	public String getName(){
+		return _username;
+	}
+	
+	public Organization getOrganization(){
+		return _org;
+	}
+	
+	public PermissionSet getPermissions(){
+		return _permissions;
+	}
+	
+	public BackupConfig getBackupConfig(){
+		return _defaultConfig;
+	}
+	
+	public Session getSession(){
+		return _session;
+	}
+
+	public void setName(String s){
+		_username = s;
+	}
+	
+	public void setOrganization(Organization o){
+		_org = o;
+	}
+	
+	public void setPermissions(PermissionSet p){
+		_permissions = p;
+	}
+	
+	public void setBackupConfig(BackupConfig b){
+		_defaultConfig = b;
+	}
+	
+	public void setSession(Session s){
+		_session = s;
+	}
+	
+	public boolean can(Permission p){
+		return _permissions.getPermission(p);
+	}
+	
+	public boolean can(Permission p, File f){
+		return _permissions.getPermission(p, f);
+	}
+	
+	public void changePermission(Permission p, Boolean b){
+		_permissions.changePermission(p, b);
+	}
+	
+	public void changePermission(File f,Permission p, Boolean b){
+		_permissions.changePermission(f, p, b);
+	}
+	
+	/*
+	 * expects list of 5 attributes
+	 */
+	public User importFN(String[] attribs){
+		//String username, Organization org, PermissionSet perms, BackupConfig bkupConfig,Session sesh)		
+		return new User(attribs[0], Organization.getInstance(u, a, fs) )
+		
+	}
+	
+	public String[] exportFN(){
+		String[] attribs = new String[5];		
+		return attribs;
+	}
+}

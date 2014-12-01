@@ -1,0 +1,8 @@
+package dotBAK.common;
+
+public class UIDGenerator {
+	private int _nextUser;
+	private int _nextOrg;
+	private int _nextFile;
+	private int _nextBackup;
+}
