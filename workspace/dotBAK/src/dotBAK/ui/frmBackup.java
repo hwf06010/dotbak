@@ -57,6 +57,10 @@ public class frmBackup extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new CardLayout(0, 0));
 		
+		final dotBAK.ui.frmArchived actArchive = new frmArchived();
+		final dotBAK.ui.frmRestore actRestore = new frmRestore();
+		final dotBAK.ui.frmSettings actSettings = new frmSettings();
+		
 		JLabel lblTime = new JLabel("Time:");
 		final JFormattedTextField timeInput = new JFormattedTextField();
 		timeInput.setText("12:00 AM");
@@ -64,27 +68,69 @@ public class frmBackup extends JFrame {
 		final JPanel pnlDaySelection = new JPanel();
 		contentPane.add(pnlDaySelection, "name_11667643194868");
 		
-		final JPanel pnlTime = new JPanel();
-		contentPane.add(pnlTime, "name_11671923690476");
+		final JPanel pnlFiles = new JPanel();
+		contentPane.add(pnlFiles, "name_11671923690476");
+		
+		final JPanel pnlSettings = new JPanel();
+		contentPane.add(pnlSettings, "name_11674572131560");
 		
 		JButton button = new JButton("Archived");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actArchive.setVisible(true);
+			}
+		});
 		
 		JButton button_1 = new JButton("Restore");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actRestore.setVisible(true);
+			}
+		});
 		
 		JButton button_2 = new JButton("Back Up");
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlFiles.setVisible(false);
+				pnlDaySelection.setVisible(true);
+			}
+		});
 		
 		JButton button_3 = new JButton("Settings");
+		button_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actSettings.setVisible(true);
+			}
+		});
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setOrientation(SwingConstants.VERTICAL);
 		
-		JLabel lblStepTime = new JLabel("Step 2: Time");
-		GroupLayout gl_pnlTime = new GroupLayout(pnlTime);
-		gl_pnlTime.setHorizontalGroup(
-			gl_pnlTime.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlTime.createSequentialGroup()
+		JLabel lblStepTime = new JLabel("Step 2: Files");
+		
+		JButton btnNext = new JButton("Next");
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlSettings.setVisible(true);
+			}
+		});
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlFiles.setVisible(false);
+				pnlDaySelection.setVisible(true);
+			}
+		});
+		GroupLayout gl_pnlFiles = new GroupLayout(pnlFiles);
+		gl_pnlFiles.setHorizontalGroup(
+			gl_pnlFiles.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnlFiles.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_pnlTime.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_pnlFiles.createParallelGroup(Alignment.LEADING)
 						.addComponent(button, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
 						.addComponent(button_1, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
 						.addComponent(button_2, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
@@ -93,14 +139,18 @@ public class frmBackup extends JFrame {
 					.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblStepTime)
-					.addContainerGap(217, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+					.addComponent(btnBack)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnNext)
+					.addContainerGap())
 		);
-		gl_pnlTime.setVerticalGroup(
-			gl_pnlTime.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_pnlTime.createSequentialGroup()
-					.addContainerGap(43, Short.MAX_VALUE)
-					.addGroup(gl_pnlTime.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlTime.createSequentialGroup()
+		gl_pnlFiles.setVerticalGroup(
+			gl_pnlFiles.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_pnlFiles.createSequentialGroup()
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addGroup(gl_pnlFiles.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlFiles.createSequentialGroup()
 							.addComponent(lblStepTime)
 							.addGap(34)
 							.addComponent(button)
@@ -112,19 +162,44 @@ public class frmBackup extends JFrame {
 							.addComponent(button_3))
 						.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 258, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
+				.addGroup(Alignment.LEADING, gl_pnlFiles.createSequentialGroup()
+					.addGroup(gl_pnlFiles.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnNext)
+						.addComponent(btnBack))
+					.addContainerGap(246, Short.MAX_VALUE))
 		);
-		pnlTime.setLayout(gl_pnlTime);
-		
-		JPanel pnlSettings = new JPanel();
-		contentPane.add(pnlSettings, "name_11674572131560");
+		pnlFiles.setLayout(gl_pnlFiles);
 		
 		JButton schArchive = new JButton("Archived");
+		schArchive.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actArchive.setVisible(true);
+			}
+		});
 		
 		JButton schRestore = new JButton("Restore");
+		schRestore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actRestore.setVisible(true);
+			}
+		});
 		
 		JButton schBackup = new JButton("Back Up");
+		schBackup.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlDaySelection.setVisible(true);
+			}
+		});
 		
 		JButton schSettings = new JButton("Settings");
+		schSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actSettings.setVisible(true);
+			}
+		});
 		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
@@ -198,7 +273,7 @@ public class frmBackup extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlDaySelection.setVisible(false);
-				pnlTime.setVisible(true);
+				pnlFiles.setVisible(true);
 			}
 		});
 		
