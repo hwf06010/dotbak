@@ -20,6 +20,10 @@ import java.awt.Component;
 public class mainFrame {
 
 	private JFrame frame;
+	
+	public static void GoBack(){
+		
+	}
 
 	/**
 	 * Launch the application.
@@ -75,7 +79,7 @@ public class mainFrame {
 		JButton btnBackUp = new JButton("Back Up");
 		btnBackUp.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e){
-				frame.setVisible(false);
+				frame.dispose();
 				actBackUp.setVisible(true);
 			}
 		});
