@@ -96,13 +96,37 @@ public class frmBackup extends JFrame {
 		final JPanel pnlSettings = new JPanel();
 		contentPane.add(pnlSettings, "name_11674572131560");
 		
-		JButton button_4 = new JButton("Archived");
+		JButton btnSetArch = new JButton("Archived");
+		btnSetArch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actArchive.setVisible(true);
+			}
+		});
 		
-		JButton button_5 = new JButton("Restore");
+		JButton btnSetRestore = new JButton("Restore");
+		btnSetRestore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actRestore.setVisible(true);
+			}
+		});
 		
-		JButton button_6 = new JButton("Back Up");
+		JButton btnSetBack = new JButton("Back Up");
+		btnSetBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlSettings.setVisible(false);
+				pnlDaySelection.setVisible(true);
+			}
+		});
 		
-		JButton button_7 = new JButton("Settings");
+		JButton btnSetSettings = new JButton("Settings");
+		btnSetSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				actSettings.setVisible(true);
+			}
+		});
 		
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setOrientation(SwingConstants.VERTICAL);
@@ -110,17 +134,34 @@ public class frmBackup extends JFrame {
 		JLabel lblStepSettings = new JLabel("Step 3: Settings");
 		
 		JButton btnFinish = new JButton("Finish");
+		btnFinish.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pnlSettings.setVisible(false);
+				pnlDaySelection.setVisible(true);
+			}
+		});
 		
 		JLabel lblName = new JLabel("Name:");
 		
-		textBackName = new JTextField();
+		textBackName = new JTextField(25);
 		textBackName.setColumns(10);
-		
+				
 		JLabel lblCompress = new JLabel("Compress:");
 		
-		JRadioButton rdbtnCompY = new JRadioButton("Yes");
+		final JRadioButton rdbtnCompN = new JRadioButton("No");	
+		final JRadioButton rdbtnCompY = new JRadioButton("Yes");
 		
-		JRadioButton rdbtnCompN = new JRadioButton("No");
+		rdbtnCompY.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rdbtnCompN.setSelected(false);
+			}
+		});
+		
+		rdbtnCompN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rdbtnCompY.setSelected(false);
+			}
+		});
 		
 		JLabel lblPassword = new JLabel("Password:");
 		
@@ -138,10 +179,10 @@ public class frmBackup extends JFrame {
 			gl_pnlSettings.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlSettings.createSequentialGroup()
 					.addGroup(gl_pnlSettings.createParallelGroup(Alignment.LEADING)
-						.addComponent(button_4, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
-						.addComponent(button_5, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
-						.addComponent(button_6, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
-						.addComponent(button_7, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnSetArch, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnSetRestore, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnSetBack, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnSetSettings, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addComponent(separator_2, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -182,13 +223,13 @@ public class frmBackup extends JFrame {
 							.addGroup(gl_pnlSettings.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_pnlSettings.createSequentialGroup()
 									.addGap(23)
-									.addComponent(button_4)
+									.addComponent(btnSetArch)
 									.addGap(11)
-									.addComponent(button_5)
+									.addComponent(btnSetRestore)
 									.addGap(11)
-									.addComponent(button_6)
+									.addComponent(btnSetBack)
 									.addGap(11)
-									.addComponent(button_7))
+									.addComponent(btnSetSettings))
 								.addGroup(gl_pnlSettings.createSequentialGroup()
 									.addGap(26)
 									.addGroup(gl_pnlSettings.createParallelGroup(Alignment.BASELINE)
