@@ -74,7 +74,7 @@ public class frmBackup extends JFrame {
 		final dotBAK.ui.frmSettings actSettings = new frmSettings();
 		
 		final JFileChooser openFile = new JFileChooser();
-		openFile.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		openFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		final JList fileList = new JList(listModel);
 		
 		
