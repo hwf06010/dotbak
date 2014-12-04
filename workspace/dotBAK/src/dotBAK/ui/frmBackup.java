@@ -14,6 +14,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
@@ -26,7 +27,12 @@ import javax.swing.JTree;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.CardLayout;
-import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import dotBAK.filesystem.File;
+import dotBAK.filesystem.LocalFile;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
@@ -40,7 +46,11 @@ public class frmBackup extends JFrame {
 	DefaultListModel listModel;
 	private JTextField textBackName;
 	private JPasswordField passwordBackup;
-
+    private ArrayList<String> _paths;
+    private ArrayList<File> _fileList;
+    //private ArrayList<File> _selectedFiles;
+    private Map<String, File> _selected;
+    
 	/**
 	 * Launch the application.
 	 */
@@ -66,7 +76,9 @@ public class frmBackup extends JFrame {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		
+		_paths = new ArrayList<String>();
+        _fileList = new ArrayList<File>();
+        _selected = new HashMap<String, File>();
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setBackground(new Color(00,00,80));
@@ -80,8 +92,8 @@ public class frmBackup extends JFrame {
 		
 		final JFileChooser openFile = new JFileChooser();
 		openFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		final JList fileList = new JList(listModel);
-		
+		   final JList<String> fileList = new JList<String>(listModel);
+           fileList.setVisibleRowCount(8);
 		
 		//JLabels
 		JLabel lblStepTime = new JLabel("Step 2: Files");
@@ -297,15 +309,35 @@ public class frmBackup extends JFrame {
 			}
 		});
 		
-		
-		JButton btnNext = new JButton("Next");
-		btnNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				pnlFiles.setVisible(false);
-				pnlSettings.setVisible(true);
-			}
-		});
-		
+        //Step 2 Next button
+        JButton btnNext = new JButton("Next");
+        btnNext.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                        if(_selected.isEmpty()){
+                                JOptionPane.showMessageDialog(null, "NOTHING SELECTED");
+                                System.out.println("EMPTY WONT GO NEXT");
+                                return;
+                        } else{
+                               
+                                //Populate _paths list of String file paths
+                                File temp;
+                                for(int i =0; i < listModel.size(); i ++)
+                                {
+                                        temp = _selected.get(listModel.get(i));
+                                        _paths.add(temp.getAbsolutePath());
+                                        //SHITASS
+                                        _fileList.add(temp);
+                                       
+                                }
+                                //change gui
+                        pnlFiles.setVisible(false);
+                        pnlSettings.setVisible(true);
+                        System.out.println(_paths.toString()); //debugging
+                        }
+                       
+                }
+        });
+        
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -353,32 +385,63 @@ public class frmBackup extends JFrame {
 			}
 		});
 		
-		JButton btnAddFile = new JButton("Add File");
-		btnAddFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int returnVal = openFile.showOpenDialog(frmBackup.this);
-				String str = new String();
-				
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-		            File file = openFile.getSelectedFile();
-		            str = file.getName();
-		            
-		            listModel.addElement(str);
-		            //This is where a real application would open the file.
-		            //log.append("Opening: " + file.getName() + "." + newline);
-		        } else {
-		            //log.append("Open command cancelled by user." + newline);
-		        }
-			}
-		});
-		
-		JButton btnRemoveFile = new JButton("Remove File");
-		btnRemoveFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int index = fileList.getSelectedIndex();
-	            listModel.remove(index);
-			}
-		});
+		 JButton btnAddFile = new JButton("Add File");
+         btnAddFile.addActionListener(new ActionListener() {
+                 public void actionPerformed(ActionEvent e) {
+                         int returnVal = openFile.showOpenDialog(frmBackup.this);
+                         String str = new String();
+                         if (returnVal == JFileChooser.APPROVE_OPTION) {
+                                
+                                 //Get selected
+                     File file = new LocalFile(openFile.getSelectedFile().getAbsolutePath());
+                    
+                     //DUPLICATE FILTER
+                     if(listModel.contains(file.getName())){
+                         return;
+                     }
+                         str = file.getName();
+                         if (file.getName().equals("")){ //DEBUGGIN = BLANK ENTRIES
+                                 System.out.println("[!] Empty String file name - skipped");
+                                 return;
+                         }
+                        
+                         listModel.addElement(str);
+                         _selected.put(str, file); //add to map for saving
+                         System.out.println("[+]_selected updated : " + _selected.containsKey(str) + " : " +  _selected.get(str)); //DEBUGGINg
+                        
+                 } else {
+                     //log.append("Open command cancelled by user." + newline);
+                 }
+                 }
+         });
+         
+         JButton btnRemoveFile = new JButton("Remove File");
+         btnRemoveFile.addActionListener(new ActionListener() {
+                 public void actionPerformed(ActionEvent e) {
+                         if(listModel.isEmpty()){
+                                 return;
+                         }else {
+                                
+                         int index = fileList.getSelectedIndex();
+                         if(index == -1){
+                                 return;
+                         }
+                        
+                         String f = (String) listModel.get(index);
+                        
+                         if(_selected.containsKey(f)){ //safeguard
+                                 _selected.remove(f);
+                                 System.out.println("removed from map:" + f);
+                         }else {
+                                 System.out.println("[!] Error removing file chosen from map.");
+                         }
+                        
+                         listModel.remove(index); // remove from GUI element
+                
+            
+                         }
+                 }
+         });
 		
 		
 		
@@ -592,5 +655,7 @@ public class frmBackup extends JFrame {
 		
 		final JPanel panel = new JPanel();
 		contentPane.add(panel, "name_28588959449256");
+		
+		
 	}
 }
