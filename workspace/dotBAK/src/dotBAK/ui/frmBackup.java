@@ -1,6 +1,7 @@
 package dotBAK.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 
@@ -49,6 +50,7 @@ public class frmBackup extends JFrame {
 				try {
 					frmBackup frame = new frmBackup();
 					frame.setVisible(true);
+					frame.setTitle("Create Backup");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -64,14 +66,17 @@ public class frmBackup extends JFrame {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBackground(new Color(00,00,80));
 		setContentPane(contentPane);
 		contentPane.setLayout(new CardLayout(0, 0));
 		
-		final dotBAK.ui.frmArchived actArchive = new frmArchived();
+	
 		final dotBAK.ui.frmRestore actRestore = new frmRestore();
 		final dotBAK.ui.frmSettings actSettings = new frmSettings();
+		final dotBAK.ui.frmArchived actArchive = new frmArchived();
 		
 		final JFileChooser openFile = new JFileChooser();
 		openFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -97,11 +102,12 @@ public class frmBackup extends JFrame {
 		final JPanel pnlSettings = new JPanel();
 		contentPane.add(pnlSettings, "name_11674572131560");
 		
+		
 		JButton btnSetArch = new JButton("Archived");
 		btnSetArch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				actArchive.setVisible(true);
+				//actArchive.setVisible(true);
 			}
 		});
 		
