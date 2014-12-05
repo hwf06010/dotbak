@@ -1,0 +1,47 @@
+package dotBAK.common;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import dotBAK.filesystem.File;
+
+public class UIDGenerator {
+	private int _nextUser;
+	private int _nextOrg;
+	private int _nextFile;
+	private int _nextBackup;
+	
+	public UIDGenerator(File uidRecord) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(uidRecord));
+		String line;
+		while ((line = br.readLine()) != null) {
+			if(line.matches(USER_PREFIX))
+				_nextUser = Integer.parseInt(line.substring(USER_PREFIX.length()));
+			else if(line.matches(ORG_PREFIX))
+				_nextOrg = Integer.parseInt(line.substring(ORG_PREFIX.length()));
+			else if(line.matches(FILE_PREFIX))
+				_nextFile = Integer.parseInt(line.substring(FILE_PREFIX.length()));
+			else if(line.matches(BACKUP_PREFIX))
+				_nextBackup = Integer.parseInt(line.substring(BACKUP_PREFIX.length()));
+		}
+		br.close();
+	}
+	
+	public int getNext(String prefix) {
+		if(prefix.equals(USER_PREFIX))
+			return _nextUser;
+		if(prefix.equals(ORG_PREFIX))
+			return _nextOrg;
+		if(prefix.equals(FILE_PREFIX))
+			return _nextFile;
+		if(prefix.equals(BACKUP_PREFIX))
+			return _nextBackup;
+		return -1;
+	}
+	
+	private static String USER_PREFIX = "U";
+	private static String ORG_PREFIX = "O";
+	private static String FILE_PREFIX = "F";
+	private static String BACKUP_PREFIX = "B";
+}

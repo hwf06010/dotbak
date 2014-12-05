@@ -1,5 +1,9 @@
 package dotBAK.filesystem;
 
+import java.util.Map;
+
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+
 public class RepositoryFile extends File {
 
 	/**
@@ -9,6 +13,23 @@ public class RepositoryFile extends File {
 
 	public RepositoryFile(String pathname) {
 		super(pathname);
+	}
+
+	@Override
+	public boolean write(FileSystem destination) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Map<String, Object> getMetaData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void addToArchive(ArchiveOutputStream archive) {
+		//NO OP
 	}
 
 }

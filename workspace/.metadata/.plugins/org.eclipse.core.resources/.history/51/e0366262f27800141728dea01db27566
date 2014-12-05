@@ -1,0 +1,61 @@
+package dotBAK.filesystem;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+
+import dotBAK.user.Permission;
+import dotBAK.user.User;
+
+public abstract class File extends java.io.File{
+
+	private Set<File> _subFiles;
+	
+	/**
+	 * generated serial version UID
+	 */
+	private static final long serialVersionUID = -4193129239531496107L;
+
+	public File(String pathname) {
+		super(pathname);
+	}
+	
+	public boolean isDirectory() {
+		return _subFiles != null;
+	}
+	
+	public String encrypt() {
+		return "key";
+	}
+	
+	public void decrypt(String key) {
+		
+	}
+	
+	public void uncompress() {
+		
+	}
+	
+	public boolean isHidden() {
+		return isHidden(null);
+	}
+	
+	public boolean isHidden(User from) {
+		return from.can(Permission.VIEW);
+	}
+	
+	public boolean hasChanged(File since) {
+		return this.lastModified() > since.lastModified();
+	}
+		
+	public abstract boolean write(FileSystem destination);
+	
+	public abstract Map<String, Object> getMetaData();
+	
+	protected void addToArchive(TarArchiveOutputStream archive) {
+		
+	}
+	
+	
+}

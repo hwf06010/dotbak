@@ -1,0 +1,34 @@
+package dotBAK.filesystem;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+
+import dotBAK.common.Filter;
+
+public class FileTree {
+	private Set<File> _topLevelFiles;
+	private Set<Filter<File>> _filters;
+	
+	public boolean compress(File out) {
+		TarArchiveOutputStream tarOut = new TarArchiveOutputStream();
+		for(File f : getFiles()) {
+			f.addToArchive(tarOut);
+		}
+	}
+	
+	public Set<File> getFiles() {
+		Set<File> files = new HashSet<File>();
+		for(File f : _topLevelFiles) {
+			boolean include = true;
+			for(Filter<File> filt : _filters) {
+				if(!filt.include(f))
+					include = false;
+			}
+			if(include)
+				files.add(f);
+		}
+		return files;
+	}
+}

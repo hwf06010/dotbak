@@ -1,0 +1,127 @@
+package dotBAK.user;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import dotBAK.backup.BackupConfig;
+import dotBAK.common.UIDGenerator;
+import dotBAK.filesystem.File;
+
+public class User {	
+	public static final String XML = "user";
+	
+	private final int _id;
+	private String _username;
+	private String _password;
+	private Organization _org;
+	private PermissionSet _permissions; 
+	private BackupConfig _defaultConfig;
+	private Session _session;
+	
+	public static User getInstance(int id, String username, String password, Organization org, PermissionSet perms, BackupConfig defaultConf){
+		//TO-DO  attempt to import user before creating new object
+		return new User(id, username, password, org, perms, defaultConf);
+	}
+	
+	private User (int id, String username, String password, Organization org, PermissionSet perms, BackupConfig defaultConf){
+		_id = id;
+		_username = username;
+		_password = password;
+		_org = org;
+		_permissions = perms;
+		_defaultConfig = defaultConf;
+	}
+	
+	public String getUID() {
+		return UIDGenerator.USER_PREFIX + _id;
+	}
+	
+	public Session auth(String username, String password){
+		if(username != null && password != null && username.equals(_username) && password.equals(_password)) {
+			if(_session == null)
+				_session = new Session();
+			return _session;
+		}
+		return null;
+	}
+	
+	public String getName(){
+		return _username;
+	}
+	
+	public Organization getOrganization(){
+		return _org;
+	}
+	
+	public BackupConfig getBackupConfig(){
+		return _defaultConfig;
+	}
+	
+	public void setDefaultConfig(BackupConfig defaultConf){
+		_defaultConfig = defaultConf;
+	}
+	
+	public boolean can(Permission perm){
+		return _permissions.getPermission(perm);
+	}
+	
+	public boolean can(Permission perm, File file){
+		return _permissions.getPermission(perm, file);
+	}
+	
+	public void changePermission(Permission perm, Boolean can){
+		_permissions.changePermission(perm, can);
+	}
+	
+	public void changePermission(File file,Permission perm, Boolean can){
+		_permissions.changePermission(file, perm, can);
+	}
+	
+	protected static User restore(Element user, Organization org) throws SAXException, IOException, ParserConfigurationException {
+		Map<Permission, Map<File, Boolean>> filePerms = new HashMap<Permission, Map<File, Boolean>>();
+		filePerms.put(Permission.VIEW, new HashMap<File, Boolean>());
+		filePerms.put(Permission.BROWSE, new HashMap<File, Boolean>());
+		filePerms.put(Permission.RESTORE, new HashMap<File, Boolean>());
+		
+		Attr uid = user.getAttributeNode("uid");
+		int id = Integer.parseInt(uid.getValue().substring(UIDGenerator.USER_PREFIX.length()));
+		String name = user.getAttribute("name");
+		String password = user.getAttribute("password");
+		// import file permissions for the user, currently don't use basic permissions
+		NodeList perms = user.getElementsByTagName("file-permission");
+		for(int i = 0; i<perms.getLength(); i++){
+			Element perm = (Element) perms.item(i);
+			String fileID = perm.getAttribute("file-uid");
+			String filePath = perm.getAttribute("file-path");
+			Boolean canView = null;
+			if(perm.hasAttribute("can-view"))
+				canView = perm.getAttribute("can-view").equals("true");
+			Boolean canBrowse = null;
+			if(perm.hasAttribute("can-browse"))
+				canBrowse = perm.getAttribute("can-browse").equals("true");
+			Boolean canRestore = null;
+			if(perm.hasAttribute("can-restore"))
+				canRestore = perm.getAttribute("can-restore").equals("true");
+
+			File inQuestion = File.getInstance(fileID, filePath);
+			filePerms.get(Permission.VIEW).put(inQuestion, canView);
+			filePerms.get(Permission.BROWSE).put(inQuestion, canBrowse);
+			filePerms.get(Permission.RESTORE).put(inQuestion, canRestore);		
+		}
+		
+		return new User(id, name, password, org, PermissionSet.getInstance(null, filePerms), null);
+	}
+	
+	protected String[] export(){
+		String[] attribs = new String[5];		
+		return attribs;
+	}
+}

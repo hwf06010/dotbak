@@ -1,0 +1,49 @@
+package dotBAK.user;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+import dotBAK.filesystem.File;
+
+
+public class PermissionSet {
+
+	private Map<Permission, Boolean> _perms;
+	private Map<Permission, Map<File, Boolean>> _filePerms;
+	private static final boolean debug = true;
+	
+	public static PermissionSet getInstance(Map<Permission, Boolean> perms, Map<Permission, Map<File, Boolean>> filePerms){
+		return new PermissionSet(perms, filePerms);
+	}
+	
+	private PermissionSet(Map<Permission, Boolean> perms, Map<Permission, Map<File, Boolean>> filePerms){
+		_perms = perms;
+		_filePerms = filePerms;
+	}
+
+	public boolean getPermission(Permission perm){
+		if()
+		
+		return _perms.get(perm);
+	}
+	
+	public boolean getPermission(Permission perm, File file){
+		return (_filePerms.get(perm)).get(file); 
+	}
+	
+	public void changePermission(Permission perm, Boolean can){
+		_perms.put(perm, can);
+	
+	}
+	
+	public void changePermission(File file, Permission perm , Boolean can){
+		if(!_filePerms.containsKey(perm)) {
+			Map<File, Boolean> inner = new HashMap<File, Boolean>();
+			_filePerms.put(perm, inner);
+		}
+		_filePerms.get(perm).put(file, can);
+		
+	}
+}
+

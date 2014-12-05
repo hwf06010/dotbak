@@ -9,8 +9,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -18,6 +20,7 @@ import javax.swing.JTree;
 
 public class frmArchived extends JFrame {
 
+	//final dotBAK.ui.frmBackup actBackup = new frmBackup();
 	private JPanel contentPane;
 
 	/**
@@ -29,6 +32,7 @@ public class frmArchived extends JFrame {
 				try {
 					frmArchived frame = new frmArchived();
 					frame.setVisible(true);
+					frame.setTitle("Archived Backup List");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -45,7 +49,8 @@ public class frmArchived extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
+
+	
 		JButton btnNewButton = new JButton("Main Menu");
 		
 		JButton btnNewButton_1 = new JButton("Restore");
@@ -55,6 +60,8 @@ public class frmArchived extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
+		
+		
 		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);

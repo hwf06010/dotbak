@@ -1,10 +1,22 @@
 package dotBAK.filesystem;
 
-import java.util.Set;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Map;
+
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+
+import dotBAK.common.UIDGenerator;
+import dotBAK.user.Permission;
+import dotBAK.user.User;
 
 public abstract class File extends java.io.File{
 
-	private Set<File> _subFiles;
+	private int _id;
 	
 	/**
 	 * generated serial version UID
@@ -15,7 +27,67 @@ public abstract class File extends java.io.File{
 		super(pathname);
 	}
 	
-	public boolean isDirectory() {
-		return _subFiles != null;
+	public String encrypt() {
+		return "key";
 	}
+	
+	public void decrypt(String key) {
+		
+	}
+	
+	//destination should be a directory to extract files to
+	public void uncompress(File destDir) throws IOException {
+	    TarArchiveInputStream in = null;
+
+        in = new TarArchiveInputStream(new FileInputStream(this));
+        TarArchiveEntry entry = in.getNextTarEntry();
+        while (entry != null) {
+        	//reconstruct each tar entry into a file
+        	java.io.File dest = new java.io.File(destDir, entry.getName());
+            if (entry.isDirectory()) {
+                dest.mkdirs();
+            } else {
+                dest.createNewFile();
+                byte [] toRead = new byte[1024];
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dest));
+                int i = 0;
+                while((i = in.read(toRead)) != -1) {
+                	out.write(toRead, 0, i);
+                }
+                out.close();
+                toRead = null;
+            }
+            entry = in.getNextTarEntry();
+        }
+        in.close();
+	}
+	
+	public boolean isHidden() {
+		return isHidden(null);
+	}
+	
+	public boolean isHidden(User from) {
+		return from.can(Permission.VIEW, this);
+	}
+	
+	public boolean hasChanged(File since) {
+		return this.lastModified() > since.lastModified();
+	}
+		
+	public abstract boolean write(FileSystem destination);
+	
+	public abstract Map<String, Object> getMetaData();
+	
+	protected abstract void addToArchive(ArchiveOutputStream archive) throws IOException;
+	
+	public String getUID() {
+		return UIDGenerator.FILE_PREFIX + _id;
+	}
+
+	public static File getInstance(String fileID, String filePath) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 }
