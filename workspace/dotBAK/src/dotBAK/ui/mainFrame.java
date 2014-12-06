@@ -64,7 +64,7 @@ public class mainFrame {
 		frame.getContentPane().setForeground(new Color(0, 0, 0));
 		frame.setBounds(100, 100, 450, 300);
 		
-		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		final dotBAK.ui.frmArchived actArchive = new frmArchived();
 		final dotBAK.ui.frmRestore actRestore = new frmRestore();
