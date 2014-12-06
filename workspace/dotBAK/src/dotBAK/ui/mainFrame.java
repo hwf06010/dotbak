@@ -64,7 +64,18 @@ public class mainFrame {
 		frame.getContentPane().setForeground(new Color(0, 0, 0));
 		frame.setBounds(100, 100, 450, 300);
 		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e){
+			       int result = JOptionPane.showConfirmDialog(null, "Exit (dot)BAK", "Confirm",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+	
+			       if(result == JOptionPane.YES_OPTION){
+			               System.exit(0);
+			       }else{
+			               //Do nothing
+			       }
+			 }
+		});
 		
 		final dotBAK.ui.frmArchived actArchive = new frmArchived();
 		final dotBAK.ui.frmRestore actRestore = new frmRestore();
