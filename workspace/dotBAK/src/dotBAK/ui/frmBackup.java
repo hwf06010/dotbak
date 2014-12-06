@@ -21,6 +21,8 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JTree;
@@ -74,7 +76,20 @@ public class frmBackup extends JFrame {
 	public frmBackup() {
 		listModel = new DefaultListModel();
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e){
+			       int result = JOptionPane.showConfirmDialog(null, "Exit (dot)BAK", "Confirm",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+	
+			       if(result == JOptionPane.YES_OPTION){
+			               System.exit(0);
+			       }else{
+			               //Do nothing
+			       }
+			 }
+		});
+		
+		
 		setBounds(100, 100, 450, 300);
 		_paths = new ArrayList<String>();
         _fileList = new ArrayList<File>();
@@ -126,7 +141,7 @@ public class frmBackup extends JFrame {
 		JButton btnSetRestore = new JButton("Restore");
 		btnSetRestore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+				//setVisible(false);
 				actRestore.setVisible(true);
 			}
 		});
@@ -288,7 +303,7 @@ public class frmBackup extends JFrame {
 		JButton button_1 = new JButton("Restore");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+				//setVisible(false);
 				actRestore.setVisible(true);
 			}
 		});
@@ -357,7 +372,7 @@ public class frmBackup extends JFrame {
 		JButton schRestore = new JButton("Restore");
 		schRestore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+				//setVisible(false);
 				actRestore.setVisible(true);
 			}
 		});
