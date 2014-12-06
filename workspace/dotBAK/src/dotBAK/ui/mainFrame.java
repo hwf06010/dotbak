@@ -71,7 +71,7 @@ public class mainFrame {
 		JButton btnRestore = new JButton("Restore");
 		btnRestore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.setVisible(false);
+				//frame.setVisible(false);
 				actRestore.setVisible(true);
 			}
 		});
@@ -87,7 +87,7 @@ public class mainFrame {
 		
 		
 		JButton btnSettings = new JButton("Settings");
-		btnRestore.addActionListener(new ActionListener(){
+		btnSettings.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e){
 				frame.setVisible(false);
 				actSettings.setVisible(true);
